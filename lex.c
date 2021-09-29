@@ -1,4 +1,8 @@
 /* 
+	Written by: Anjaly Davis, Jennifer Nguyen
+	Fall 2021 COP 3402
+	October 1, 2021
+	
 	This is the lex.c file for the UCF Fall 2021 Systems Software Project.
 	For HW2, you must implement the function lexeme *lexanalyzer(char *input).
 	You may add as many constants, global variables, and support functions
