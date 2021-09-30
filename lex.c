@@ -32,6 +32,47 @@ void printtokens();
 
 lexeme *lexanalyzer(char *input)
 {
+	
+    while (input[i] != NULL)
+    {
+        if (iscntrl(input[i]) || isspace(input[i])
+        {
+            i++;
+            continue;
+        }
+        
+        j = i; // j is the first of the 11 set
+        while (isalpha(input[j]))
+        {
+            if (i % MAX_IDENT_LEN + 1 != 0 || !iscntrl(input[i]) || !isspace(input[i]) // when i < 12
+            {
+                if (isalpha(input[i]) || isdigit(input[i]))
+                    identBuffer[k] = input[i];
+            }
+            else
+            {
+                // input is more than max
+                if (isalpha(input[i]) || isdigit(input[i]))
+                {
+                    printlexerror(4);
+                    return NULL;
+                }
+                // compare buffer to reserve if not then its going to be an identifier
+                else
+                {
+                    strcpy(list[j].name, identBuffer);
+                    if
+                }
+            }
+            i++;
+        }
+            
+            
+            
+        
+       
+        
+        i++;
 	return NULL;
 }
 
