@@ -33,6 +33,7 @@ void printtokens();
 lexeme *letterFirst(char *input , lexeme *list, int k)
 {
     int i, j;
+    int length;
     char *identBuffer = malloc(sizeof(char) * MAX_IDENT_LEN);
     
     lex_index = 0;
@@ -65,6 +66,7 @@ lexeme *letterFirst(char *input , lexeme *list, int k)
         k++;
     }
     
+    length = strlen(identBuffer);
     strncpy(list[lex_index].name, identBuffer, MAX_IDENT_LEN);
         
     if (strcmp(list[lex_index].name, "const") == 0)
