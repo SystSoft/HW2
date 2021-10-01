@@ -66,7 +66,7 @@ void compareReserve(lexeme *list)
         list[lex_index].value = 7;
         list[lex_index].type = dosym;
     }
-    else if (strcmp(list[lex_index].name, "else if") == 0)
+    else if (strcmp(list[lex_index].name, "if") == 0)
     {
         list[lex_index].value = 8;
         list[lex_index].type = ifsym;
@@ -110,34 +110,30 @@ void compareReserve(lexeme *list)
     
 }
 
-int letterFirst(char *input , lexeme *list, int k)
+int letterFirst(char *input, lexeme *list, int k)
 {
-    int i, j;
+    int j;
     int length;
     char *identBuffer = malloc(sizeof(char) * MAX_IDENT_LEN);
     
     j = 0;
     while (input[k] != '\0')
     {
-        if (iscntrl(input[k]) || isspace(input[k]))
-        {
-            k++;
-            continue;
-        }
         
-        // when i < 12
-        if (j + 1 % MAX_IDENT_LEN != 0) // should be +1????????????????????
+        if (iscntrl(input[k]) || isspace(input[k]))
+            break;
+        
+        if (j < MAX_IDENT_LEN)
         {
-            
             if (isalpha(input[k]) || isdigit(input[k]))
             {
                 identBuffer[j] = input[k];
                 j++;
             }
             else
-                break; // if neither letter or number, it is a symbol
+                break;
         }
-        else if (isalpha(input[i]) || isdigit(input[i]))
+        else if (isalpha(input[k]) || isdigit(input[k]))
         {
             printlexerror(4);
             return '\0';
@@ -166,9 +162,8 @@ int digitFirst(char *input , lexeme *list, int k)
             k++;
             continue;
         }
-        
-        // when i < 12
-        if (j + 1 % MAX_NUMBER_LEN != 0)// should be +1????????????????????
+  
+        if (j < MAX_NUMBER_LEN)
         {
             
             if (isdigit(input[k]))
@@ -179,7 +174,7 @@ int digitFirst(char *input , lexeme *list, int k)
             else
                 break; // if neither letter or number, it is a symbol
         }
-        else if (isalpha(input[i]) || isdigit(input[i]))
+        else if (isalpha(input[k]) || isdigit(input[k]))
         {
             printlexerror(3);
             return '\0';
@@ -199,7 +194,7 @@ int digitFirst(char *input , lexeme *list, int k)
 
 int isSymbol(char *input , lexeme *list, int k)
 {
-    int i, j;
+    int j;
     int length;
     char *symBuffer = malloc(sizeof(char) * MAX_NUMBER_LEN);
     
@@ -212,7 +207,7 @@ int isSymbol(char *input , lexeme *list, int k)
         if (isalpha(input[k]) || isdigit(input[k]))
             break;
         
-        if (j + 1 % MAX_NUMBER_LEN != 0) // should be +1????????????????????
+        if (j < MAX_NUMBER_LEN)
         {
             symBuffer[j] = input[k];
             j++;
@@ -314,7 +309,7 @@ int isSymbol(char *input , lexeme *list, int k)
                 break;
             }
         }
-        // if exceeds max length and no match is found
+        // if exceeds max length
         else
         {
             printlexerror(1);
@@ -335,6 +330,12 @@ int isSymbol(char *input , lexeme *list, int k)
         list[lex_index].type = gtrsym;
     }
     
+    // if no matches found, print error and return
+    if (list[lex_index].value == '\0')
+    {
+        printlexerror(1);
+        return '\0';
+    }
     return length;
 }
 
@@ -346,6 +347,14 @@ lexeme *lexanalyzer(char *input)
     
     while (input[i] != '\0')
     {
+        // ignore comments
+        if (input[i] == '/' && input[i+1] == '/')
+        {
+            while(input[i] != '\n')
+                i++;
+        }
+        
+        // ignore white space
         if (iscntrl(input[i]) || isspace(input[i]))
         {
             i++;
@@ -371,7 +380,6 @@ lexeme *lexanalyzer(char *input)
         if (add == '\0')    // an error occured
             return NULL;
         i += add;
-       
     }
     printtokens();
     
