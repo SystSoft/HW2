@@ -65,20 +65,84 @@ lexeme *letterFirst(char *input , lexeme *list, int k)
         k++;
     }
     
-    //lex_index = 0;
     strncpy(list[lex_index].name, identBuffer, MAX_IDENT_LEN);
         
     if (strcmp(list[lex_index].name, "const") == 0)
     {
         list[lex_index].value = 1;
-        list[lex_index].type = list[lex_index].value;
-        
+        list[lex_index].type = constsym;
     }
-    lex_index++;
+    if (strcmp(list[lex_index].name, "var") == 0)
+    {
+        list[lex_index].value = 2;
+        list[lex_index].type = varsym;
+    }
+    if (strcmp(list[lex_index].name, "procedure") == 0)
+    {
+        list[lex_index].value = 3;
+        list[lex_index].type = procsym;
+    }
+    if (strcmp(list[lex_index].name, "begin") == 0)
+    {
+        list[lex_index].value = 4;
+        list[lex_index].type = beginsym;
+    }
+    if (strcmp(list[lex_index].name, "end") == 0)
+    {
+        list[lex_index].value = 5;
+        list[lex_index].type = endsym;
+    }
+    if (strcmp(list[lex_index].name, "while") == 0)
+    {
+        list[lex_index].value = 6;
+        list[lex_index].type = whilesym;
+    }
+    if (strcmp(list[lex_index].name, "do") == 0)
+    {
+        list[lex_index].value = 7;
+        list[lex_index].type = dosym;
+    }
+    if (strcmp(list[lex_index].name, "if") == 0)
+    {
+        list[lex_index].value = 8;
+        list[lex_index].type = ifsym;
+    }
+    if (strcmp(list[lex_index].name, "then") == 0)
+    {
+        list[lex_index].value = 9;
+        list[lex_index].type = thensym;
+    }
+    if (strcmp(list[lex_index].name, "else") == 0)
+    {
+        list[lex_index].value = 10;
+        list[lex_index].type = elsesym;
+    }
+    if (strcmp(list[lex_index].name, "call") == 0)
+    {
+        list[lex_index].value = 11;
+        list[lex_index].type = callsym;
+    }
+    if (strcmp(list[lex_index].name, "write") == 0)
+    {
+        list[lex_index].value = 12;
+        list[lex_index].type = writesym;
+    }
+    if (strcmp(list[lex_index].name, "read") == 0)
+    {
+        list[lex_index].value = 13;
+        list[lex_index].type = readsym;
+    }
+    if (strcmp(list[lex_index].name, "identifiers") == 0)
+    {
+        list[lex_index].value = 14;
+        list[lex_index].type = identsym;
+    }
+    if (strcmp(list[lex_index].name, "numbers") == 0)
+    {
+        list[lex_index].value = 15;
+        list[lex_index].type = numbersym;
+    }
     
-       
-
-  
     return NULL;
 }
 
