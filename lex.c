@@ -29,17 +29,96 @@ int lex_index;
 void printlexerror(int type);
 void printtokens();
 
+void compareReserve(lexeme *list)
+{
+    if (strcmp(list[lex_index].name, "const") == 0)
+    {
+        list[lex_index].value = 1;
+        list[lex_index].type = constsym;
+    }
+    else if (strcmp(list[lex_index].name, "var") == 0)
+    {
+        list[lex_index].value = 2;
+        list[lex_index].type = varsym;
+    }
+    else if (strcmp(list[lex_index].name, "procedure") == 0)
+    {
+        list[lex_index].value = 3;
+        list[lex_index].type = procsym;
+    }
+    else if (strcmp(list[lex_index].name, "begin") == 0)
+    {
+        list[lex_index].value = 4;
+        list[lex_index].type = beginsym;
+    }
+    else if (strcmp(list[lex_index].name, "end") == 0)
+    {
+        list[lex_index].value = 5;
+        list[lex_index].type = endsym;
+    }
+    else if (strcmp(list[lex_index].name, "while") == 0)
+    {
+        list[lex_index].value = 6;
+        list[lex_index].type = whilesym;
+    }
+    else if (strcmp(list[lex_index].name, "do") == 0)
+    {
+        list[lex_index].value = 7;
+        list[lex_index].type = dosym;
+    }
+    else if (strcmp(list[lex_index].name, "else if") == 0)
+    {
+        list[lex_index].value = 8;
+        list[lex_index].type = ifsym;
+    }
+    else if (strcmp(list[lex_index].name, "then") == 0)
+    {
+        list[lex_index].value = 9;
+        list[lex_index].type = thensym;
+    }
+    else if (strcmp(list[lex_index].name, "else") == 0)
+    {
+        list[lex_index].value = 10;
+        list[lex_index].type = elsesym;
+    }
+    else if (strcmp(list[lex_index].name, "call") == 0)
+    {
+        list[lex_index].value = 11;
+        list[lex_index].type = callsym;
+    }
+    else if (strcmp(list[lex_index].name, "write") == 0)
+    {
+        list[lex_index].value = 12;
+        list[lex_index].type = writesym;
+    }
+    else if (strcmp(list[lex_index].name, "read") == 0)
+    {
+        list[lex_index].value = 13;
+        list[lex_index].type = readsym;
+    }
+    else if (strcmp(list[lex_index].name, "odd") == 0)
+    {
+        list[lex_index].value = 28;
+        list[lex_index].type = oddsym;
+    }
+    else
+    {
+        // if not reserved, it is an identifier
+        list[lex_index].value = 14;
+        list[lex_index].type = identsym;
+    }
+    
+}
 
-lexeme *letterFirst(char *input , lexeme *list, int k)
+int letterFirst(char *input , lexeme *list, int k)
 {
     int i, j;
     int length;
     char *identBuffer = malloc(sizeof(char) * MAX_IDENT_LEN);
     
-    lex_index = 0;
+    j = 0;
     while (input[k] != '\0')
     {
-        
         if (iscntrl(input[k]) || isspace(input[k]))
         {
             k++;
@@ -47,13 +126,13 @@ lexeme *letterFirst(char *input , lexeme *list, int k)
         }
         
         // when i < 12
-        if (lex_index + 1 % MAX_IDENT_LEN != 0)
+        if (j + 1 % MAX_IDENT_LEN != 0) // should be +1????????????????????
         {
             
             if (isalpha(input[k]) || isdigit(input[k]))
             {
-                identBuffer[lex_index] = input[k];
-                lex_index++;
+                identBuffer[j] = input[k];
+                j++;
             }
             else
                 break; // if neither letter or number, it is a symbol
@@ -61,103 +140,213 @@ lexeme *letterFirst(char *input , lexeme *list, int k)
         else if (isalpha(input[i]) || isdigit(input[i]))
         {
             printlexerror(4);
-            return NULL;
+            return '\0';
         }
         k++;
     }
     
-    length = strlen(identBuffer);
+    length = (int)strlen(identBuffer);
     strncpy(list[lex_index].name, identBuffer, MAX_IDENT_LEN);
+    compareReserve(list);
+    
+    return length;
+}
+
+int digitFirst(char *input , lexeme *list, int k)
+{
+    int i, j;
+    int length;
+    char *digitBuffer = malloc(sizeof(char) * MAX_NUMBER_LEN);
+    
+    j = 0;
+    while (input[k] != '\0')
+    {
+        if (iscntrl(input[k]) || isspace(input[k]))
+        {
+            k++;
+            continue;
+        }
         
-    if (strcmp(list[lex_index].name, "const") == 0)
-    {
-        list[lex_index].value = 1;
-        list[lex_index].type = constsym;
-    }
-    if (strcmp(list[lex_index].name, "var") == 0)
-    {
-        list[lex_index].value = 2;
-        list[lex_index].type = varsym;
-    }
-    if (strcmp(list[lex_index].name, "procedure") == 0)
-    {
-        list[lex_index].value = 3;
-        list[lex_index].type = procsym;
-    }
-    if (strcmp(list[lex_index].name, "begin") == 0)
-    {
-        list[lex_index].value = 4;
-        list[lex_index].type = beginsym;
-    }
-    if (strcmp(list[lex_index].name, "end") == 0)
-    {
-        list[lex_index].value = 5;
-        list[lex_index].type = endsym;
-    }
-    if (strcmp(list[lex_index].name, "while") == 0)
-    {
-        list[lex_index].value = 6;
-        list[lex_index].type = whilesym;
-    }
-    if (strcmp(list[lex_index].name, "do") == 0)
-    {
-        list[lex_index].value = 7;
-        list[lex_index].type = dosym;
-    }
-    if (strcmp(list[lex_index].name, "if") == 0)
-    {
-        list[lex_index].value = 8;
-        list[lex_index].type = ifsym;
-    }
-    if (strcmp(list[lex_index].name, "then") == 0)
-    {
-        list[lex_index].value = 9;
-        list[lex_index].type = thensym;
-    }
-    if (strcmp(list[lex_index].name, "else") == 0)
-    {
-        list[lex_index].value = 10;
-        list[lex_index].type = elsesym;
-    }
-    if (strcmp(list[lex_index].name, "call") == 0)
-    {
-        list[lex_index].value = 11;
-        list[lex_index].type = callsym;
-    }
-    if (strcmp(list[lex_index].name, "write") == 0)
-    {
-        list[lex_index].value = 12;
-        list[lex_index].type = writesym;
-    }
-    if (strcmp(list[lex_index].name, "read") == 0)
-    {
-        list[lex_index].value = 13;
-        list[lex_index].type = readsym;
-    }
-    if (strcmp(list[lex_index].name, "identifiers") == 0)
-    {
-        list[lex_index].value = 14;
-        list[lex_index].type = identsym;
-    }
-    if (strcmp(list[lex_index].name, "numbers") == 0)
-    {
-        list[lex_index].value = 15;
-        list[lex_index].type = numbersym;
+        // when i < 12
+        if (j + 1 % MAX_NUMBER_LEN != 0)// should be +1????????????????????
+        {
+            
+            if (isdigit(input[k]))
+            {
+                digitBuffer[j] = input[k];
+                j++;
+            }
+            else
+                break; // if neither letter or number, it is a symbol
+        }
+        else if (isalpha(input[i]) || isdigit(input[i]))
+        {
+            printlexerror(3);
+            return '\0';
+        }
+        k++;
     }
     
-    return NULL;
+    length = (int)strlen(digitBuffer);
+    
+    strncpy(list[lex_index].name, digitBuffer, MAX_NUMBER_LEN);
+    
+    list[lex_index].value = atoi(list[lex_index].name);
+    list[lex_index].type = numbersym;
+    
+    return length;
+}
+
+int isSymbol(char *input , lexeme *list, int k)
+{
+    int i, j;
+    int length;
+    char *symBuffer = malloc(sizeof(char) * MAX_NUMBER_LEN);
+    
+    j = 0;
+    while (input[k] != '\0')
+    {
+        if (iscntrl(input[k]) || isspace(input[k]))
+            break;
+       
+        if (isalpha(input[k]) || isdigit(input[k]))
+            break;
+        
+        if (j + 1 % MAX_NUMBER_LEN != 0) // should be +1????????????????????
+        {
+            symBuffer[j] = input[k];
+            j++;
+            
+            // test if matches as we go, if a match is found break out of loop to return
+            length = (int)strlen(symBuffer);
+            strncpy(list[lex_index].name, symBuffer, MAX_NUMBER_LEN);
+                
+            if (strcmp(list[lex_index].name, ":=") == 0)
+            {
+                list[lex_index].value = 16;
+                list[lex_index].type = assignsym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, "+") == 0)
+            {
+                list[lex_index].value = 17;
+                list[lex_index].type = addsym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, "-") == 0)
+            {
+                list[lex_index].value = 18;
+                list[lex_index].type = subsym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, "*") == 0)
+            {
+                list[lex_index].value = 19;
+                list[lex_index].type = multsym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, "/") == 0)
+            {
+                list[lex_index].value = 20;
+                list[lex_index].type = divsym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, "%") == 0)
+            {
+                list[lex_index].value = 21;
+                list[lex_index].type = modsym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, "==") == 0)
+            {
+                list[lex_index].value = 22;
+                list[lex_index].type = eqlsym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, "!=") == 0)
+            {
+                list[lex_index].value = 23;
+                list[lex_index].type = neqsym;
+                break;
+            }
+            
+            else if (strcmp(list[lex_index].name, "<=") == 0)
+            {
+                list[lex_index].value = 25;
+                list[lex_index].type = leqsym;
+                break;
+            }
+            
+            else if (strcmp(list[lex_index].name, ">=") == 0)
+            {
+                list[lex_index].value = 27;
+                list[lex_index].type = geqsym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, "(") == 0)
+            {
+                list[lex_index].value = 29;
+                list[lex_index].type = lparensym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, ")") == 0)
+            {
+                list[lex_index].value = 30;
+                list[lex_index].type = rparensym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, ",") == 0)
+            {
+                list[lex_index].value = 31;
+                list[lex_index].type = commasym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, ".") == 0)
+            {
+                list[lex_index].value = 32;
+                list[lex_index].type = periodsym;
+                break;
+            }
+            else if (strcmp(list[lex_index].name, ";") == 0)
+            {
+                list[lex_index].value = 33;
+                list[lex_index].type = semicolonsym;
+                break;
+            }
+        }
+        // if exceeds max length and no match is found
+        else
+        {
+            printlexerror(1);
+            return '\0';
+        }
+        k++;
+    }
+    
+    // symbols that share components with other symbols are checked last
+    if (strcmp(list[lex_index].name, "<") == 0)
+    {
+        list[lex_index].value = 24;
+        list[lex_index].type = lsssym;
+    }
+    else if (strcmp(list[lex_index].name, ">") == 0)
+    {
+        list[lex_index].value = 26;
+        list[lex_index].type = gtrsym;
+    }
+    
+    return length;
 }
 
 lexeme *lexanalyzer(char *input)
 {
-    int i = 0, j = 0; // i = input counter  j = initial i
-    char numBuffer[MAX_NUMBER_LEN];
+    int i = 0, j = 0, add; // i = input counter  j = initial i
+    list = malloc(MAX_NUMBER_TOKENS * sizeof(struct lexeme));
     lex_index = 0;
-    lexeme *list = malloc(MAX_NUMBER_TOKENS * sizeof(struct lexeme));
     
     while (input[i] != '\0')
     {
-       if (iscntrl(input[i]) || isspace(input[i]))
+        if (iscntrl(input[i]) || isspace(input[i]))
         {
             i++;
             continue;
@@ -165,18 +354,30 @@ lexeme *lexanalyzer(char *input)
         
         if (isalpha(input[i]))
         {
-            letterFirst(input, list, i); // i is index of the first letter, j is index of list
+            add = letterFirst(input, list, i); // i is index of the first letter
             lex_index++;
         }
-        
-        i++;
+        else if (isdigit(input[i]))
+        {
+            add = digitFirst(input, list, i); // i is index of the first letter
+            lex_index++;
+        }
+        else
+        {
+            // if neither alpha or digit, it is a symbol
+            add = isSymbol(input, list, i);
+            lex_index++;
+        }
+        if (add == '\0')    // an error occured
+            return NULL;
+        i += add;
+       
     }
     printtokens();
-
-	return NULL;
+    
+	return list;
     
 }
-
 
 void printtokens()
 {
