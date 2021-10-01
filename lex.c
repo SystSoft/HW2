@@ -1,8 +1,8 @@
-/* 
-	Written by: Anjaly Davis, Jennifer Nguyen
-	Fall 2021 COP 3402
-	October 1, 2021
-	
+/*
+    Written by: Anjaly Davis, Jennifer Nguyen
+     Fall 2021 COP 3402
+     October 1, 2021
+     
 	This is the lex.c file for the UCF Fall 2021 Systems Software Project.
 	For HW2, you must implement the function lexeme *lexanalyzer(char *input).
 	You may add as many constants, global variables, and support functions
@@ -30,50 +30,85 @@ void printlexerror(int type);
 void printtokens();
 
 
+lexeme *letterFirst(char *input , lexeme *list, int k)
+{
+    int i, j;
+    char *identBuffer = malloc(sizeof(char) * MAX_IDENT_LEN);
+    
+    lex_index = 0;
+    while (input[k] != '\0')
+    {
+        
+        if (iscntrl(input[k]) || isspace(input[k]))
+        {
+            k++;
+            continue;
+        }
+        
+        // when i < 12
+        if (lex_index + 1 % MAX_IDENT_LEN != 0)
+        {
+            
+            if (isalpha(input[k]) || isdigit(input[k]))
+            {
+                identBuffer[lex_index] = input[k];
+                lex_index++;
+            }
+            else
+                break; // if neither letter or number, it is a symbol
+        }
+        else if (isalpha(input[i]) || isdigit(input[i]))
+        {
+            printlexerror(4);
+            return NULL;
+        }
+        k++;
+    }
+    
+    //lex_index = 0;
+    strncpy(list[lex_index].name, identBuffer, MAX_IDENT_LEN);
+        
+    if (strcmp(list[lex_index].name, "const") == 0)
+    {
+        list[lex_index].value = 1;
+        list[lex_index].type = list[lex_index].value;
+        
+    }
+    lex_index++;
+    
+       
+
+  
+    return NULL;
+}
+
 lexeme *lexanalyzer(char *input)
 {
-	
-    while (input[i] != NULL)
+    int i = 0, j = 0; // i = input counter  j = initial i
+    char numBuffer[MAX_NUMBER_LEN];
+    lex_index = 0;
+    lexeme *list = malloc(MAX_NUMBER_TOKENS * sizeof(struct lexeme));
+    
+    while (input[i] != '\0')
     {
-        if (iscntrl(input[i]) || isspace(input[i])
+       if (iscntrl(input[i]) || isspace(input[i]))
         {
             i++;
             continue;
         }
         
-        j = i; // j is the first of the 11 set
-        while (isalpha(input[j]))
+        if (isalpha(input[i]))
         {
-            if (i % MAX_IDENT_LEN + 1 != 0 || !iscntrl(input[i]) || !isspace(input[i]) // when i < 12
-            {
-                if (isalpha(input[i]) || isdigit(input[i]))
-                    identBuffer[k] = input[i];
-            }
-            else
-            {
-                // input is more than max
-                if (isalpha(input[i]) || isdigit(input[i]))
-                {
-                    printlexerror(4);
-                    return NULL;
-                }
-                // compare buffer to reserve if not then its going to be an identifier
-                else
-                {
-                    strcpy(list[j].name, identBuffer);
-                    if
-                }
-            }
-            i++;
+            letterFirst(input, list, i); // i is index of the first letter, j is index of list
+            lex_index++;
         }
-            
-            
-            
-        
-       
         
         i++;
+    }
+    printtokens();
+
 	return NULL;
+    
 }
 
 
