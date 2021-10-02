@@ -327,7 +327,7 @@ lexeme *lexanalyzer(char *input)
             i++;
             continue;
         }
-        printf("%c", input[i]);
+    
         if (isalpha(input[i]))
         {
             add = letterFirst(input, list, i); // i is index of the first letter
